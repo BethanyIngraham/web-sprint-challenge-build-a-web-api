@@ -19,6 +19,30 @@ async function checkProjectId(req, res, next) {
     }
 }
 
+function checkReqBody(req, res, next) {
+    const {name, description} = req.body;
+    if(
+        name !== undefined 
+        && typeof name === 'string' 
+        && name.length
+        && name.trim().length
+        && description !== undefined
+        && typeof description === 'string'
+        && description.length
+        && description.trim().length
+    ) {
+        req.name = name;
+        req.description = description;
+        next();
+    } else {
+        next({
+            status: 400, 
+            message: 'Please provide name and description'
+        });
+    }
+}
+
 module.exports = {
     checkProjectId,
+    checkReqBody
 };

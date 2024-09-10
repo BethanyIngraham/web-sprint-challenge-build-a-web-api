@@ -1,6 +1,6 @@
 // Write your "projects" router here!
 const express = require('express');
-const {checkProjectId} = require('./projects-middleware');
+const {checkProjectId, checkReqBody} = require('./projects-middleware');
 const Projects = require('./projects-model');
 
 const router = express.Router();
@@ -18,9 +18,24 @@ router.get('/:id', checkProjectId, (req, res) => {
     res.status(200).json(req.project);
 });
 
+router.post('/', checkReqBody, async (req, res, next) => {
+    try {
+        const newProjectObj = {
+            name: req.body.name, 
+            description: req.body.description,
+            completed: req.body.completed === true ? true : false
+        };
+        const newProject = await Projects.insert(newProjectObj);
+        res.status(201).json(newProject);
+    } catch(err) {
+        next(err);
+    }
+});
+
 router.use((err, req, res, next) => { // eslint-disable-line
     res.status(err.status || 500).json({
-        message: err.message
+        message: err.message,
+        cutsomMessage: 'Server error'
     });
 });
 
