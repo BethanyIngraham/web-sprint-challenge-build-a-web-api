@@ -23,7 +23,7 @@ router.post('/', checkReqBody, async (req, res, next) => {
         const newProjectObj = {
             name: req.body.name, 
             description: req.body.description,
-            completed: req.body.completed === true ? true : false
+            completed: req.body.completed ? true : false
         };
         const newProject = await Projects.insert(newProjectObj);
         res.status(201).json(newProject);
@@ -77,9 +77,9 @@ router.get('/:id/actions', checkProjectId, async (req, res, next) => {
 });
 
 router.use((err, req, res, next) => { // eslint-disable-line
+    console.log(err.message)
     res.status(err.status || 500).json({
-        message: err.message,
-        cutsomMessage: 'Server error'
+        message: err.message || 'Server error'
     });
 });
 
