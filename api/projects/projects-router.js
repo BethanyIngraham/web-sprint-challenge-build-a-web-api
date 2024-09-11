@@ -32,6 +32,40 @@ router.post('/', checkReqBody, async (req, res, next) => {
     }
 });
 
+router.put('/:id', checkProjectId, checkReqBody, async (req, res, next) => {
+    try {
+       const {id} = req.params;
+       const {name, description, completed} = req.body;
+       if(completed === undefined) {
+        next({
+            status: 400,
+            message: 'Please provide name, description and the completed status'
+        });
+       } else {
+        const updatedProject = await Projects.update(id, {
+            name: name, 
+            description: description, 
+            completed: completed
+           });
+        res.status(200).json(updatedProject);
+       }  
+    } catch(err) {
+        next(err);
+    }
+});
+
+router.delete('/:id', checkProjectId, async (req, res, next) => {
+    try {
+        const {id} = req.params;
+        const deletedProject = await Projects.remove(id); // eslint-disable-line
+        res.status(200).json({
+            message: `Project with id ${id} was deleted`
+        })
+    } catch(err) {
+        next(err)
+    }
+});
+
 router.use((err, req, res, next) => { // eslint-disable-line
     res.status(err.status || 500).json({
         message: err.message,
