@@ -60,9 +60,19 @@ router.delete('/:id', checkProjectId, async (req, res, next) => {
         const deletedProject = await Projects.remove(id); // eslint-disable-line
         res.status(200).json({
             message: `Project with id ${id} was deleted`
-        })
+        });
     } catch(err) {
-        next(err)
+        next(err);
+    }
+});
+
+router.get('/:id/actions', checkProjectId, async (req, res, next) => {
+    try {
+        const {id} = req.params;
+        const projectActions = await Projects.getProjectActions(id);
+        res.status(200).json(projectActions);
+    } catch(err) {
+        next(err);
     }
 });
 
