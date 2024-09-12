@@ -42,9 +42,28 @@ router.post('/', checkActionsReqBody, async (req, res, next) => {
     }
 });
 
-// router.put('/:id', checkActionsId, (req, res) => {
-
-// });
+router.put('/:id', checkActionsId, checkActionsReqBody, async (req, res, next) => {
+    try {
+        const {id} = req.params;
+        const {project_id, description, notes, completed} = req.body;
+        if(completed === undefined) {
+            next({
+                status: 400,
+                message: 'Need project_id, description, notes and completed status'
+            });
+        } else {
+            const updatedAction = await Actions.update(id, {
+                project_id: project_id,
+                description: description,
+                notes: notes,
+                completed: completed
+            });
+            res.status(200).json(updatedAction);
+        }
+    } catch(err) {
+        next(err);
+    }
+});
 
 // router.delete('/:id', checkActionsId, (req, res) => {
 
