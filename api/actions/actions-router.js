@@ -65,9 +65,17 @@ router.put('/:id', checkActionsId, checkActionsReqBody, async (req, res, next) =
     }
 });
 
-// router.delete('/:id', checkActionsId, (req, res) => {
-
-// });
+router.delete('/:id', checkActionsId, async (req, res, next) => {
+    try {
+        const {id} = req.params;
+        const deletedAction = await Actions.remove(id); // eslint-disable-line
+        res.status(200).json({
+            message: `Action with id ${id} was deleted`
+        });
+    } catch(err) {
+        next(err);
+    }
+});
 
 router.use((err, req, res, next) => { // eslint-disable-line
     res.status(err.status || 500).json({

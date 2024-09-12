@@ -77,7 +77,6 @@ router.get('/:id/actions', checkProjectId, async (req, res, next) => {
 });
 
 router.use((err, req, res, next) => { // eslint-disable-line
-    console.log(err.message)
     res.status(err.status || 500).json({
         message: err.message || 'Server error'
     });
